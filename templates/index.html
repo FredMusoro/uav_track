@@ -9,24 +9,32 @@
    crossorigin=""></script>
         <link rel="stylesheet" href="{{url_for('static', filename='app.css')}}">
 
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.css" />
+        <script src="https://unpkg.com/leaflet.pm@latest/dist/leaflet.pm.min.js"></script>
 
         <title>Track Editor</title>
     </head>
 
     <body>
-        <h1>My text of map, {{ map.track_map}}!</h1>
+        <h1>UAV route map</h1>
 
     <div id="mapid" style="width: 1200px; height: 800px;"></div>
 
     <script>
-        var mymap = L.map('mapid').setView([50.116266, 22.013811], 13);
+        var points = {{ lat_lon|tojson }};
+        var map = L.map('mapid').setView(points[0], 13);
 
         L.tileLayer(
             'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-        }).addTo(mymap);
+        }).addTo(map);
 
-        var cervi_robotics = L.marker([50.116335, 22.013360]).addTo(mymap);
+        var polyline = L.polyline(points, {color: 'red'}).addTo(map);
+        map.fitBounds(polyline.getBounds());
+        map.pm.addControls({
+            position: 'topleft',
+            drawCircle: false,
+        });
     </script>
     </body>
 </html>
