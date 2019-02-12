@@ -1,0 +1,32 @@
+<html>
+    <head>
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+         <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
+        <link rel="stylesheet" href="{{url_for('static', filename='app.css')}}">
+
+
+        <title>Track Editor</title>
+    </head>
+
+    <body>
+        <h1>My text of map, {{ map.track_map}}!</h1>
+
+    <div id="mapid" style="width: 1200px; height: 800px;"></div>
+
+    <script>
+        var mymap = L.map('mapid').setView([50.116266, 22.013811], 13);
+
+        L.tileLayer(
+            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(mymap);
+
+        var cervi_robotics = L.marker([50.116335, 22.013360]).addTo(mymap);
+    </script>
+    </body>
+</html>
