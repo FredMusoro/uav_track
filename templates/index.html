@@ -18,7 +18,25 @@
     <body>
         <h1>UAV route map</h1>
 
+        <form style="float: left;" onclick="JavaScript:addStartPoint()">
+            Start point
+            <select id="start_point" name="start_point">
+                <option value="1">1 start point</option>
+                <option value="2">2 start point</option>
+            </select>
+        </form>
+
+        <form action="...">
+            Landing point
+            <select name="landing point">
+                <option>1 landing point</option>
+                <option>2 landing point</option>
+            </select>
+        </form>
+
     <div id="mapid" style="width: 1200px; height: 800px;"></div>
+        <a href='#' id='export'>Export Features</a>
+        <a href='#' id='delete'>Delete Features</a>
 
     <script>
         var points = {{ lat_lon|tojson }};
@@ -29,12 +47,43 @@
             {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        var featureGroup = L.featureGroup().addTo(map);
+
+        map.on('pm:create', function(e) {
+            featureGroup.addLayer(e.layer);
+        });
+
         var polyline = L.polyline(points, {color: 'red'}).addTo(map);
         map.fitBounds(polyline.getBounds());
+
         map.pm.addControls({
             position: 'topleft',
             drawCircle: false,
         });
+
+        document.getElementById('delete').onclick = function(e) {
+            featureGroup.clearLayers();
+        };
+
+        document.getElementById('export').onclick = function(e) {
+            var data = featureGroup.toGeoJSON();
+
+            var convertedData = 'text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data));
+
+            document.getElementById('export').setAttribute('href', 'data:' + convertedData);
+            document.getElementById('export').setAttribute('download','data.geojson');
+        };
+
+        function addStartPoint() {
+            var e = document.getElementById("start_point");
+            var e_value = e.options[e.selectedIndex].value;
+            console.log(e_value);
+            
+            L.marker([47.397750, 8.545611]).addTo(map);
+
+
+        };
+
     </script>
     </body>
 </html>
