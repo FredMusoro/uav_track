@@ -21,14 +21,15 @@
         <form style="float: left;" onclick="JavaScript:addStartPoint()">
             Start point
             <select id="start_point" name="start_point">
-                <option value="1">1 start point</option>
-                <option value="2">2 start point</option>
+                {% for key, value in start_points.items() %}
+                    <option value="{{ value }}">{{ key }}</option>
+                {% endfor %}
             </select>
         </form>
 
         <form action="...">
-            Landing point
-            <select name="landing point">
+            Land point
+            <select name="land_point">
                 <option>1 landing point</option>
                 <option>2 landing point</option>
             </select>
@@ -55,6 +56,7 @@
 
         var polyline = L.polyline(points, {color: 'red'}).addTo(map);
         map.fitBounds(polyline.getBounds());
+        featureGroup.addLayer(polyline)
 
         map.pm.addControls({
             position: 'topleft',
@@ -74,12 +76,16 @@
             document.getElementById('export').setAttribute('download','data.geojson');
         };
 
+        var startPoints = L.featureGroup().addTo(map);
+
         function addStartPoint() {
             var e = document.getElementById("start_point");
             var e_value = e.options[e.selectedIndex].value;
-            console.log(e_value);
-            
-            L.marker([47.397750, 8.545611]).addTo(map);
+            var position = JSON.parse(e_value);
+
+            startPoints.clearLayers();
+            var startPoint = L.marker([position[0], position[1]]).addTo(map);
+            startPoints.addLayer(startPoint);
 
 
         };
