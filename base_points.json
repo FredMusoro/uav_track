@@ -1,0 +1,10 @@
+{
+  "start_points": {
+    "Mobility Carsharing": [47.397750, 8.545611, 455.0],
+    "Institute RechtsMedizin": [47.398835, 8.548919, 440.0]
+  },
+  "land_points": {
+    "Pflegen Zentrum": [47.393345, 8.547898, 430.0],
+    "Katholishe Kirche": [47.394029, 8.543780, 445.0]
+  }
+}
