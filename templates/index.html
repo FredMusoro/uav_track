@@ -1,6 +1,6 @@
 <html>
     <head>
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
    integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
    crossorigin=""/>
@@ -18,7 +18,7 @@
     <body>
         <h1>UAV route map</h1>
 
-        <form style="float: left;" onclick="JavaScript:addStartPoint()">
+        <form style="float: left;">
             Start point
             <select id="start_point" name="start_point">
                 {% for key, value in start_points.items() %}
@@ -27,7 +27,7 @@
             </select>
         </form>
 
-        <form style="float: left;" onclick="JavaScript:addLandPoint()">
+        <form style="float: left;">
             Land point
             <select name="land_point" id="land_point">
                 {% for key, value in land_points.items() %}
@@ -44,91 +44,10 @@
     <div id="mapid" style="width: 1200px; height: 800px;"></div>
         <a href='#' id='export'>Export Features</a>
         <a href='#' id='delete'>Delete Features</a>
-
     <script>
         var points = {{ lat_lon|tojson }};
-        var map = L.map('mapid').setView(points[0], 13);
-
-        L.tileLayer(
-            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        var routeGroup = L.featureGroup().addTo(map);
-
-        map.on('pm:create', function(e) {
-            routeGroup.addLayer(e.layer);
-        });
-
-        var polyline = L.polyline(points, {color: 'red'}).addTo(map);
-        map.fitBounds(polyline.getBounds());
-        routeGroup.addLayer(polyline)
-
-        map.pm.addControls({
-            position: 'topleft',
-            drawCircle: false,
-        });
-
-        document.getElementById('delete').onclick = function(e) {
-            routeGroup.clearLayers();
-        };
-
-        document.getElementById('export').onclick = function(e) {
-            var start_data = startPoints.toGeoJSON();
-            var start_feature = start_data['features'][0];
-            start_feature['properties'].name = 'start_point';
-
-            var land_data = landPoints.toGeoJSON();
-            var land_feature = land_data['features'][0];
-            land_feature['properties'].name = 'land_point';
-
-            var height_value = document.getElementById("height").value;
-
-            var data = routeGroup.toGeoJSON();
-            data.start_point = start_feature['geometry']['coordinates']
-            data.land_point = land_feature['geometry']['coordinates']
-            data.height = height_value;
-
-            console.log(typeof data);
-            var xhr = new XMLHttpRequest();
-
-            var url = 'http://127.0.0.1:5000/#';
-            var requestData = JSON.stringify((data));
-            console.log(requestData);
-            console.log(typeof requestData);
-
-            xhr.open("POST", url, true);
-            xhr.setRequestHeader("Content-Type", "application/json");
-            xhr.send(requestData);
-
-            // document.getElementById('export').setAttribute('href', 'data:' + convertedData);
-            // document.getElementById('export').setAttribute('download','data.geojson');
-        };
-
-        var startPoints = L.featureGroup().addTo(map);
-
-        function addStartPoint() {
-            var e = document.getElementById("start_point");
-            var e_value = e.options[e.selectedIndex].value;
-            var position = JSON.parse(e_value);
-
-            startPoints.clearLayers();
-            var startPoint = L.marker([position[0], position[1]]).addTo(map);
-            startPoints.addLayer(startPoint);
-        };
-
-        var landPoints = L.featureGroup().addTo(map);
-
-        function addLandPoint() {
-            var e = document.getElementById("land_point");
-            var e_value = e.options[e.selectedIndex].value;
-            var position = JSON.parse(e_value);
-
-            landPoints.clearLayers();
-            var landPoint = L.marker([position[0], position[1]]).addTo(map);
-            landPoints.addLayer(landPoint);
-        };
-
+    </script>
+    <script src="{{url_for('static', filename='app.js')}}">
     </script>
     </body>
 </html>
